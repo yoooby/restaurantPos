@@ -1,19 +1,21 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:restaurent_pos/controllers/core_controller.dart';
 import 'package:restaurent_pos/theme/palette.dart';
 
-class PaymentBar extends StatelessWidget {
-  const PaymentBar({super.key});
+class OrderBar extends ConsumerWidget {
+  const OrderBar({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentSlectedTable = ref.watch(currentSelectedTableProvider);
     return Container(
       color: Palette.textColor,
       child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            // only one edge is rounded
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.5),
@@ -30,6 +32,61 @@ class PaymentBar extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             child: Column(
               children: [
+                Row(
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.table_restaurant_sharp,
+                          color: Colors.grey,
+                        ),
+                        Text(
+                          currentSlectedTable?.name ?? "",
+                          style:
+                              TextStyle(fontSize: 20, color: Palette.textColor),
+                        ),
+                      ],
+                    ),
+                    Spacer(),
+                    if (currentSlectedTable?.orderId != null)
+                      Text(
+                        'Order: #${currentSlectedTable?.orderId}',
+                        style:
+                            TextStyle(fontSize: 20, color: Palette.textColor),
+                      )
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                // add new order button
+                if (currentSlectedTable?.orderId == null)
+                  ElevatedButton(
+                    onPressed: () {
+                      ref
+                          .read(coreControllerProvider.notifier)
+                          .createOrder(context, currentSlectedTable!);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Palette.primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 40),
+                      textStyle: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    child: Text(
+                      'New Order',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                const SizedBox(
+                  height: 20,
+                ),
                 Spacer(),
                 Row(
                   children: [
@@ -39,7 +96,7 @@ class PaymentBar extends StatelessWidget {
                     ),
                     Spacer(),
                     Text(
-                      '\$100.00',
+                      '\$0.00',
                       style: TextStyle(fontSize: 20),
                     ),
                   ],
@@ -70,7 +127,7 @@ class PaymentBar extends StatelessWidget {
                         Spacer(),
                         // split cents and dollars
                         Text(
-                          '\$100.00',
+                          '\$0.00',
                           style: TextStyle(color: Colors.white),
                         ),
                       ],

@@ -7,9 +7,14 @@ environment:
   sdk: ">=3.2.3 <4.0.0"
 
 dependencies:
+  cloud_firestore: ^4.15.4
+  firebase_core: ^2.25.4
+  firebase_storage: ^11.6.5
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.4.10
+  fpdart: ^1.1.0
+  uuid: ^4.3.3
 
 dev_dependencies:
   flutter_test:

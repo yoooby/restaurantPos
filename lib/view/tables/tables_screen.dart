@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:restaurent_pos/controllers/core_controller.dart';
+import 'package:restaurent_pos/models/table.dart';
 import 'package:restaurent_pos/theme/palette.dart';
 
 class TablesScreen extends ConsumerWidget {
@@ -7,24 +9,34 @@ class TablesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tables = ref.watch(tablesListProvider);
     return Expanded(
-      child: GridView(
+        child: tables.when(data: (List<Booth> data) {
+      return GridView.builder(
         gridDelegate:
             const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 6),
-        children: [
-          TableIcon("T1", true, true),
-          TableIcon("T2", false, false),
-          TableIcon("T3", false, false),
-          TableIcon("T4", false, false),
-          TableIcon("T5", true, false),
-          TableIcon("T6", false, false),
-          TableIcon("T7", false, false),
-          TableIcon("T8", false, false),
-          TableIcon("T9", true, false),
-          TableIcon("T10", false, false),
-        ],
-      ),
-    );
+        itemCount: data.length,
+        itemBuilder: (context, index) {
+          return TableIcon(
+            tableNumber: data[index].name,
+            hasOrder: data[index].orderId == null
+                ? false
+                : true, // TODO: check if table has order or not,
+            isSelected: ref.watch(currentSelectedTableProvider) == data[index],
+          );
+        },
+      );
+    }, error: (error, stack) {
+      return Center(
+        child: Text(error.toString()),
+      );
+    }, loading: () {
+      return Center(
+        child: CircularProgressIndicator(
+          color: Palette.primaryColor,
+        ),
+      );
+    }));
   }
 }
 
@@ -32,8 +44,11 @@ class TableIcon extends ConsumerWidget {
   final bool hasOrder;
   final bool isSelected;
   final String tableNumber;
-  const TableIcon(this.tableNumber, this.hasOrder, this.isSelected,
-      {super.key});
+  const TableIcon(
+      {required this.tableNumber,
+      required this.hasOrder,
+      required this.isSelected,
+      super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,7 +56,11 @@ class TableIcon extends ConsumerWidget {
       color: isSelected ? Palette.primaryColor : Palette.backgroundColor,
       elevation: 0,
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          ref
+              .watch(currentSelectedTableProvider.notifier)
+              .update((state) => Booth(name: tableNumber));
+        },
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
