@@ -48,12 +48,6 @@ class OrderBar extends ConsumerWidget {
                       ],
                     ),
                     Spacer(),
-                    if (currentSlectedTable?.orderId != null)
-                      Text(
-                        'Order: #${currentSlectedTable?.orderId}',
-                        style:
-                            TextStyle(fontSize: 20, color: Palette.textColor),
-                      )
                   ],
                 ),
                 const SizedBox(

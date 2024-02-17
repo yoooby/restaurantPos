@@ -18,6 +18,11 @@ class TablesScreen extends ConsumerWidget {
         itemCount: data.length,
         itemBuilder: (context, index) {
           return TableIcon(
+            () {
+              ref
+                  .watch(currentSelectedTableProvider.notifier)
+                  .update((state) => data[index]);
+            },
             tableNumber: data[index].name,
             hasOrder: data[index].orderId == null
                 ? false
@@ -41,10 +46,11 @@ class TablesScreen extends ConsumerWidget {
 }
 
 class TableIcon extends ConsumerWidget {
+  final VoidCallback onTap;
   final bool hasOrder;
   final bool isSelected;
   final String tableNumber;
-  const TableIcon(
+  const TableIcon(this.onTap,
       {required this.tableNumber,
       required this.hasOrder,
       required this.isSelected,
@@ -56,11 +62,7 @@ class TableIcon extends ConsumerWidget {
       color: isSelected ? Palette.primaryColor : Palette.backgroundColor,
       elevation: 0,
       child: InkWell(
-        onTap: () {
-          ref
-              .watch(currentSelectedTableProvider.notifier)
-              .update((state) => Booth(name: tableNumber));
-        },
+        onTap: onTap,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
