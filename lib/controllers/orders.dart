@@ -5,12 +5,11 @@ import 'package:restaurent_pos/models/order.dart';
 
 final currentOrderProvider =
     StateNotifierProvider<CurrentOrder, List<OrderItem>>((ref) {
-  // reset the order when the currentSelectedTable changes
-
   return CurrentOrder();
 });
 
 class CurrentOrder extends StateNotifier<List<OrderItem>> {
+  // init state if the currentselectedTable has an order id aleardy get the order and set it as the state
   CurrentOrder() : super([]);
 
   void addItem(Item item) {
@@ -55,5 +54,14 @@ class CurrentOrder extends StateNotifier<List<OrderItem>> {
         0,
         (previousValue, element) =>
             previousValue + element.quantity * element.item.price);
+  }
+
+  void setOrder(Order? order) {
+    // set currentselected table order id to the order id
+    if (order?.items == null || order!.items.isEmpty) {
+      state = [];
+      return;
+    }
+    state = order.items;
   }
 }

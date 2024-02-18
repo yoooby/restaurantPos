@@ -90,8 +90,50 @@ class CoreRepository {
   FutureEither<Model.Order> getOrder(String orderId) async {
     try {
       final snapshot = await _firestore.collection('orders').doc(orderId).get();
+      // i keep gettiing expected value of type list<int> but got value of type list<dynamic>
+
       final order = Model.Order.fromMap(snapshot.data()!);
       return right(order);
+    } catch (e) {
+      print(e.toString());
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureVoid updateOrder(Model.Order order) async {
+    try {
+      return right(
+          _firestore.collection('orders').doc(order.id).update(order.toMap()));
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureVoid markOrderAsDone(Model.Order order) async {
+    try {
+      return right(_firestore
+          .collection('orders')
+          .doc(order.id)
+          .update({'isDone': true}));
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureVoid deleteOrder(Model.Order order) async {
+    try {
+      return right(_firestore.collection('orders').doc(order.id).delete());
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureVoid deleteTable(Booth table) async {
+    try {
+      return right(_firestore
+          .collection(FirebaseConstants.tableCollection)
+          .doc(table.name)
+          .delete());
     } catch (e) {
       return left(Failure(e.toString()));
     }

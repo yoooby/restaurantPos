@@ -56,7 +56,7 @@ class Order {
       id: map['id'] as String,
       note: map['note'] as String,
       items: List<OrderItem>.from(
-        (map['items'] as List<int>).map<OrderItem>(
+        (map['items'] as List<dynamic>).map<OrderItem>(
           (x) => OrderItem.fromMap(x as Map<String, dynamic>),
         ),
       ),

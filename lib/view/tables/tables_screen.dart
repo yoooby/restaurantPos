@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent_pos/controllers/core_controller.dart';
+import 'package:restaurent_pos/controllers/orders.dart';
 import 'package:restaurent_pos/models/table.dart';
 import 'package:restaurent_pos/theme/palette.dart';
 import 'package:restaurent_pos/view/core/appbar.dart';
@@ -36,12 +37,22 @@ class TablesScreen extends ConsumerWidget {
                     itemCount: data.length,
                     itemBuilder: (context, index) {
                       return TableIcon(
-                        () {
+                        () async {
                           ref
                               .watch(currentSelectedTableProvider.notifier)
                               .update((state) => data[index]);
                           if (data[index].orderId == null) {
                             Routemaster.of(context).push('/menu');
+                            ref
+                                .read(currentOrderProvider.notifier)
+                                .clearOrder();
+                          } else {
+                            final order = await ref
+                                .read(coreControllerProvider.notifier)
+                                .getOrderByID(data[index].orderId!);
+                            ref
+                                .read(currentOrderProvider.notifier)
+                                .setOrder(order);
                           }
                         },
                         tableNumber: data[index].name,

@@ -1,7 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:restaurent_pos/controllers/core_controller.dart';
 import 'package:restaurent_pos/models/item.dart';
 import 'package:restaurent_pos/theme/palette.dart';
@@ -10,13 +12,17 @@ import 'package:restaurent_pos/view/menu/bottom_category_bar.dart';
 import 'package:restaurent_pos/view/menu/cards.dart';
 import 'package:restaurent_pos/view/orders/order_bar.dart';
 import 'package:restaurent_pos/view/tables/tables_screen.dart';
+import 'package:routemaster/routemaster.dart';
 
 class Menu extends ConsumerWidget {
-  const Menu({super.key});
+  String? category;
+  Menu({
+    this.category,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final items = ref.watch(itemsListProvider);
+    final data = ref.watch(itemsListProvider);
     return SafeArea(
       child: Scaffold(
           drawer: Drawer(
@@ -31,8 +37,17 @@ class Menu extends ConsumerWidget {
                     children: [
                       TopBar(),
                       Expanded(
-                          child: items.when(
+                          child: data.when(
                               data: (List<Item> items) {
+                                if (category != null) {
+                                  items = items
+                                      .where((element) =>
+                                          element.category == category)
+                                      .toList();
+                                } else if (category == null) {
+                                  return _buildCategoryGrid(ref, context);
+                                }
+                                // Items list
                                 return GridView.builder(
                                   gridDelegate:
                                       SliverGridDelegateWithFixedCrossAxisCount(
@@ -55,5 +70,32 @@ class Menu extends ConsumerWidget {
             ],
           )),
     );
+  }
+
+  Widget _buildCategoryGrid(WidgetRef ref, BuildContext context) {
+    final categories = ref.watch(categoriesListProvider);
+    return categories.when(data: (List<Map<String, int>> data) {
+      return GridView.builder(
+          gridDelegate:
+              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+          itemBuilder: (context, index) {
+            return CategoryCard(
+              onTap: () => Routemaster.of(context)
+                  .push('/menu/${data[index].keys.first}'),
+              category: data[index].keys.first,
+            );
+          },
+          itemCount: data.length);
+    }, error: (error, stack) {
+      return Center(
+        child: Text(error.toString()),
+      );
+    }, loading: () {
+      return Center(
+        child: CircularProgressIndicator(
+          color: Palette.primaryColor,
+        ),
+      );
+    });
   }
 }

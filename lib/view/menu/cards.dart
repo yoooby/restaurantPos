@@ -56,14 +56,15 @@ class ItemCard extends ConsumerWidget {
 
 class CategoryCard extends StatelessWidget {
   final String? category;
-  const CategoryCard({super.key, this.category});
+  final VoidCallback onTap;
+  const CategoryCard({super.key, this.category, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(8),
       child: InkWell(
-        onTap: () {},
+        onTap: onTap,
         child: Card(
           surfaceTintColor: Colors.white,
           borderOnForeground: false,

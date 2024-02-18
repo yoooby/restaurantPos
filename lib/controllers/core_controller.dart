@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,7 +10,6 @@ import 'package:restaurent_pos/models/order.dart' as Model;
 import 'package:restaurent_pos/models/table.dart';
 import 'package:restaurent_pos/repository/core_repository.dart';
 // import fpdart
-import 'package:fpdart/fpdart.dart';
 // import uuid
 import 'package:uuid/uuid.dart';
 
@@ -18,6 +19,7 @@ final getOrderByIDProvider =
   return controller.getOrderByID(id);
 });
 final currentSelectedTableProvider = StateProvider<Booth?>((ref) {
+  // if selected table has an order update the current order provider
   return null;
 });
 
@@ -38,6 +40,12 @@ final itemsListProvider = FutureProvider.autoDispose<List<Item>>((ref) async {
 final tablesListProvider = StreamProvider.autoDispose<List<Booth>>((ref) {
   final controller = ref.read(coreControllerProvider.notifier);
   return controller.getTables();
+});
+
+final categoriesListProvider =
+    FutureProvider.autoDispose<List<Map<String, int>>>((ref) async {
+  final controller = ref.read(coreControllerProvider.notifier);
+  return controller.getCategories();
 });
 
 class CoreController extends StateNotifier<bool> {
@@ -61,7 +69,23 @@ class CoreController extends StateNotifier<bool> {
 
   Future<List<Item>> getItems() async {
     final items = await _coreRepository.getItems();
-    return items.fold((l) => [], (r) => r);
+    return items.fold((l) => [], (r) {
+      return r;
+    });
+  }
+
+  // get categories list
+  Future<List<Map<String, int>>> getCategories() async {
+    final items = await _coreRepository.getItems();
+    return items.fold((l) => [], (r) {
+      final categories = r.map((e) => e.category).toSet().toList();
+      final categoriesCount = categories
+          .map((e) => {
+                e: r.where((element) => element.category == e).length,
+              })
+          .toList();
+      return categoriesCount;
+    });
   }
 
   Future<void> addTable(BuildContext context, String name) {
@@ -82,18 +106,19 @@ class CoreController extends StateNotifier<bool> {
 
   Future<void> createOrder(BuildContext context, Booth table) {
     if (table.orderId != null) {
-      state = false;
       showErrorSnackBar(context, 'Table Already has an order!');
+      return Future.value();
     }
     state = true;
     final order = Model.Order(
-      id: Uuid().v4(),
+      id: const Uuid().v1(),
       note: '',
       items: _ref.read(currentOrderProvider),
       isDone: false,
       createdAt: DateTime.now(),
-      tableId: table!.name,
+      tableId: table.name,
     );
+
     return _coreRepository.createOrder(order, table).then((value) {
       value.fold((l) {
         state = false;
@@ -109,6 +134,18 @@ class CoreController extends StateNotifier<bool> {
   // get order
   Future<Model.Order?> getOrderByID(String id) async {
     final order = await _coreRepository.getOrder(id);
-    return order.fold((l) => null, (r) => r);
+    return order.fold((l) {
+      return null;
+    }, (r) => r);
+  }
+
+  Future<void> updateOrder(BuildContext context, Model.Order order) {
+    return _coreRepository.updateOrder(order).then((value) {
+      value.fold((l) {
+        showErrorSnackBar(context, l.message);
+      }, (r) {
+        return;
+      });
+    });
   }
 }
