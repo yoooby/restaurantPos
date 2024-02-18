@@ -2,20 +2,28 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:restaurent_pos/controllers/core_controller.dart';
+import 'package:restaurent_pos/controllers/orders.dart';
+import 'package:restaurent_pos/models/item.dart';
 import 'package:restaurent_pos/theme/palette.dart';
 
 class ItemCard extends ConsumerWidget {
-  final String foodName;
-  final double price;
-  final String category;
-  const ItemCard(this.foodName, this.price, this.category, {super.key});
+  final Item item;
+
+  const ItemCard(this.item);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: EdgeInsets.all(8),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          if (ref.watch(currentSelectedTableProvider) == null) {
+            return;
+          }
+          ref.watch(currentOrderProvider.notifier).addItem(item);
+          print("Item added to order");
+        },
         child: Card(
           surfaceTintColor: Colors.white,
           borderOnForeground: false,
@@ -26,16 +34,17 @@ class ItemCard extends ConsumerWidget {
             child: Column(
               children: [
                 Text(
-                  category,
+                  item.category,
                   style: TextStyle(color: Colors.grey),
                 ),
                 Spacer(),
                 Text(
-                  foodName,
+                  item.name,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Spacer(),
-                Text("\$" + price.toString(), style: TextStyle(fontSize: 20)),
+                Text("\$" + item.price.toString(),
+                    style: TextStyle(fontSize: 20)),
               ],
             ),
           ),

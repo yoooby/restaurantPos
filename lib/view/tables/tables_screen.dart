@@ -1,8 +1,13 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent_pos/controllers/core_controller.dart';
 import 'package:restaurent_pos/models/table.dart';
 import 'package:restaurent_pos/theme/palette.dart';
+import 'package:restaurent_pos/view/core/appbar.dart';
+import 'package:restaurent_pos/view/orders/order_bar.dart';
+import 'package:routemaster/routemaster.dart';
 
 class TablesScreen extends ConsumerWidget {
   const TablesScreen({super.key});
@@ -10,38 +15,62 @@ class TablesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tables = ref.watch(tablesListProvider);
-    return Expanded(
-        child: tables.when(data: (List<Booth> data) {
-      return GridView.builder(
-        gridDelegate:
-            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 6),
-        itemCount: data.length,
-        itemBuilder: (context, index) {
-          return TableIcon(
-            () {
-              ref
-                  .watch(currentSelectedTableProvider.notifier)
-                  .update((state) => data[index]);
-            },
-            tableNumber: data[index].name,
-            hasOrder: data[index].orderId == null
-                ? false
-                : true, // TODO: check if table has order or not,
-            isSelected: ref.watch(currentSelectedTableProvider) == data[index],
-          );
-        },
-      );
-    }, error: (error, stack) {
-      return Center(
-        child: Text(error.toString()),
-      );
-    }, loading: () {
-      return Center(
-        child: CircularProgressIndicator(
-          color: Palette.primaryColor,
+    return SafeArea(
+      child: Scaffold(
+        drawer: Drawer(
+          backgroundColor: Palette.drawerColor,
         ),
-      );
-    }));
+        backgroundColor: Palette.backgroundColor,
+        body: Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: Column(children: [
+                TopBar(),
+                Expanded(
+                    child: tables.when(data: (List<Booth> data) {
+                  return GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 6),
+                    itemCount: data.length,
+                    itemBuilder: (context, index) {
+                      return TableIcon(
+                        () {
+                          ref
+                              .watch(currentSelectedTableProvider.notifier)
+                              .update((state) => data[index]);
+                          if (data[index].orderId == null) {
+                            Routemaster.of(context).push('/menu');
+                          }
+                        },
+                        tableNumber: data[index].name,
+                        hasOrder: data[index].orderId == null
+                            ? false
+                            : true, // TODO: check if table has order or not,
+                        isSelected: ref.watch(currentSelectedTableProvider) ==
+                            data[index],
+                      );
+                    },
+                  );
+                }, error: (error, stack) {
+                  return Center(
+                    child: Text(error.toString()),
+                  );
+                }, loading: () {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: Palette.primaryColor,
+                    ),
+                  );
+                })),
+              ]),
+            ),
+            Expanded(child: const OrderBar()),
+          ],
+        ),
+      ),
+    );
   }
 }
 

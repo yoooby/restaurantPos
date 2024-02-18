@@ -73,7 +73,6 @@ class CoreRepository {
 
   FutureVoid createOrder(Model.Order order, Booth table) async {
     // link the order with table
-
     try {
       table = table.copyWith(orderId: order.id);
       await _firestore
@@ -81,7 +80,8 @@ class CoreRepository {
           .doc(table.name)
           .update(table.toMap());
 
-      return right(_firestore.collection('orders').add(order.toMap()));
+      return right(
+          _firestore.collection('orders').doc(order.id).set(order.toMap()));
     } catch (e) {
       return left(Failure(e.toString()));
     }

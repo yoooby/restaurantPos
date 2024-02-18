@@ -8,7 +8,7 @@ import 'package:restaurent_pos/models/item.dart';
 class Order {
   final String id;
   final String note;
-  final List<Item> items;
+  final List<OrderItem> items;
   final bool isDone;
   final DateTime createdAt;
   final String tableId;
@@ -25,7 +25,7 @@ class Order {
   Order copyWith({
     String? id,
     String? note,
-    List<Item>? items,
+    List<OrderItem>? items,
     bool? isDone,
     DateTime? createdAt,
     String? tableId,
@@ -55,9 +55,9 @@ class Order {
     return Order(
       id: map['id'] as String,
       note: map['note'] as String,
-      items: List<Item>.from(
-        (map['items'] as List<int>).map<Item>(
-          (x) => Item.fromMap(x as Map<String, dynamic>),
+      items: List<OrderItem>.from(
+        (map['items'] as List<int>).map<OrderItem>(
+          (x) => OrderItem.fromMap(x as Map<String, dynamic>),
         ),
       ),
       isDone: map['isDone'] as bool,
@@ -97,4 +97,55 @@ class Order {
         createdAt.hashCode ^
         tableId.hashCode;
   }
+}
+
+class OrderItem {
+  final Item item;
+  final int quantity;
+  OrderItem({
+    required this.item,
+    required this.quantity,
+  });
+
+  OrderItem copyWith({
+    Item? item,
+    int? quantity,
+  }) {
+    return OrderItem(
+      item: item ?? this.item,
+      quantity: quantity ?? this.quantity,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'item': item.toMap(),
+      'quantity': quantity,
+    };
+  }
+
+  factory OrderItem.fromMap(Map<String, dynamic> map) {
+    return OrderItem(
+      item: Item.fromMap(map['item'] as Map<String, dynamic>),
+      quantity: map['quantity'] as int,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory OrderItem.fromJson(String source) =>
+      OrderItem.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() => 'OrderItem(item: $item, quantity: $quantity)';
+
+  @override
+  bool operator ==(covariant OrderItem other) {
+    if (identical(this, other)) return true;
+
+    return other.item == item && other.quantity == quantity;
+  }
+
+  @override
+  int get hashCode => item.hashCode ^ quantity.hashCode;
 }

@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent_pos/common/utils.dart';
+import 'package:restaurent_pos/controllers/orders.dart';
 import 'package:restaurent_pos/models/item.dart';
 import 'package:restaurent_pos/models/order.dart' as Model;
 import 'package:restaurent_pos/models/table.dart';
@@ -16,7 +17,9 @@ final getOrderByIDProvider =
   final controller = ref.read(coreControllerProvider.notifier);
   return controller.getOrderByID(id);
 });
-final currentSelectedTableProvider = StateProvider<Booth?>((ref) => null);
+final currentSelectedTableProvider = StateProvider<Booth?>((ref) {
+  return null;
+});
 
 // controller provider
 final coreControllerProvider =
@@ -78,19 +81,26 @@ class CoreController extends StateNotifier<bool> {
   }
 
   Future<void> createOrder(BuildContext context, Booth table) {
+    if (table.orderId != null) {
+      state = false;
+      showErrorSnackBar(context, 'Table Already has an order!');
+    }
+    state = true;
     final order = Model.Order(
       id: Uuid().v4(),
       note: '',
-      items: [],
+      items: _ref.read(currentOrderProvider),
       isDone: false,
       createdAt: DateTime.now(),
-      tableId: table.name,
+      tableId: table!.name,
     );
     return _coreRepository.createOrder(order, table).then((value) {
       value.fold((l) {
-        print(l.message);
+        state = false;
         showErrorSnackBar(context, l.message);
       }, (r) {
+        _ref.read(currentOrderProvider.notifier).clearOrder();
+        state = false;
         return;
       });
     });
