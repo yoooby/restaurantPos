@@ -16,6 +16,11 @@ final authControllerProvider =
   return AuthController(ref, authRepository);
 });
 
+// getusers method provider
+final userListProvider = FutureProvider.autoDispose
+    .family<List<User>, BuildContext>((ref, contex) =>
+        ref.watch(authControllerProvider.notifier).getUsers(contex));
+
 class AuthController extends StateNotifier<bool> {
   final Ref _ref;
   final AuthRepository _authRepository;

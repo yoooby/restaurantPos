@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:restaurent_pos/common/drawer.dart';
 import 'package:restaurent_pos/controllers/core_controller.dart';
 import 'package:restaurent_pos/controllers/orders.dart';
 import 'package:restaurent_pos/models/table.dart';
@@ -18,9 +19,7 @@ class TablesScreen extends ConsumerWidget {
     final tables = ref.watch(tablesListProvider);
     return SafeArea(
       child: Scaffold(
-        drawer: Drawer(
-          backgroundColor: Palette.drawerColor,
-        ),
+        drawer: buildDrawer(ref, context),
         backgroundColor: Palette.backgroundColor,
         body: Row(
           children: [

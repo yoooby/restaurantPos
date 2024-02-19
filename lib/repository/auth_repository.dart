@@ -83,15 +83,13 @@ class AuthRepository {
   // login
   FutureEither<User> login(String name, int pin) async {
     try {
-      final snapshot = await _firestore
-          .collection('users')
-          .where('name', isEqualTo: name)
-          .where('pin', isEqualTo: pin)
-          .get();
-      if (snapshot.docs.isEmpty) {
-        return left(Failure('User not found'));
+      final snapshot = await _firestore.collection('users').doc(name).get();
+      // check if pin is correct
+      if (snapshot['pin'] != pin) {
+        return left(Failure('Invalid pin'));
       }
-      final user = snapshot.docs.first;
+
+      final user = snapshot.data()!;
       return right(
           User(name: user['name'], role: Role.values[user['role'] as int]));
     } catch (e) {

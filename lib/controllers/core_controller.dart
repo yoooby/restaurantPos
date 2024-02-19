@@ -4,7 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent_pos/common/utils.dart';
+import 'package:restaurent_pos/controllers/auth_controller.dart';
 import 'package:restaurent_pos/controllers/orders.dart';
+import 'package:restaurent_pos/main.dart';
 import 'package:restaurent_pos/models/item.dart';
 import 'package:restaurent_pos/models/order.dart' as Model;
 import 'package:restaurent_pos/models/table.dart';
@@ -109,8 +111,10 @@ class CoreController extends StateNotifier<bool> {
       showErrorSnackBar(context, 'Table Already has an order!');
       return Future.value();
     }
+
     state = true;
     final order = Model.Order(
+      user: _ref.read(userProvider)!,
       id: const Uuid().v1(),
       note: '',
       items: _ref.read(currentOrderProvider),

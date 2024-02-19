@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 import 'package:restaurent_pos/models/item.dart';
+import 'package:restaurent_pos/models/user.dart';
 
 class Order {
   final String id;
@@ -12,6 +13,7 @@ class Order {
   final bool isDone;
   final DateTime createdAt;
   final String tableId;
+  final User user;
 
   Order({
     required this.id,
@@ -20,6 +22,7 @@ class Order {
     required this.isDone,
     required this.createdAt,
     required this.tableId,
+    required this.user,
   });
 
   Order copyWith({
@@ -29,6 +32,7 @@ class Order {
     bool? isDone,
     DateTime? createdAt,
     String? tableId,
+    User? user,
   }) {
     return Order(
       id: id ?? this.id,
@@ -37,6 +41,7 @@ class Order {
       isDone: isDone ?? this.isDone,
       createdAt: createdAt ?? this.createdAt,
       tableId: tableId ?? this.tableId,
+      user: user ?? this.user,
     );
   }
 
@@ -48,6 +53,7 @@ class Order {
       'isDone': isDone,
       'createdAt': createdAt.millisecondsSinceEpoch,
       'tableId': tableId,
+      'user': user.toMap(),
     };
   }
 
@@ -63,6 +69,7 @@ class Order {
       isDone: map['isDone'] as bool,
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
       tableId: map['tableId'] as String,
+      user: User.fromMap(map['user'] as Map<String, dynamic>),
     );
   }
 
@@ -73,7 +80,7 @@ class Order {
 
   @override
   String toString() {
-    return 'Order(id: $id, note: $note, items: $items, isDone: $isDone, createdAt: $createdAt, tableId: $tableId)';
+    return 'Order(id: $id, note: $note, items: $items, isDone: $isDone, createdAt: $createdAt, tableId: $tableId, user: $user)';
   }
 
   @override
@@ -85,7 +92,8 @@ class Order {
         listEquals(other.items, items) &&
         other.isDone == isDone &&
         other.createdAt == createdAt &&
-        other.tableId == tableId;
+        other.tableId == tableId &&
+        other.user == user;
   }
 
   @override
@@ -95,7 +103,8 @@ class Order {
         items.hashCode ^
         isDone.hashCode ^
         createdAt.hashCode ^
-        tableId.hashCode;
+        tableId.hashCode ^
+        user.hashCode;
   }
 }
 

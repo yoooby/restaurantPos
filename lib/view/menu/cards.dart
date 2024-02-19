@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:restaurent_pos/common/utils.dart';
 import 'package:restaurent_pos/controllers/core_controller.dart';
 import 'package:restaurent_pos/controllers/orders.dart';
 import 'package:restaurent_pos/models/item.dart';
@@ -19,10 +20,10 @@ class ItemCard extends ConsumerWidget {
       child: InkWell(
         onTap: () {
           if (ref.watch(currentSelectedTableProvider) == null) {
+            showErrorSnackBar(context, "Please select a table");
             return;
           }
           ref.watch(currentOrderProvider.notifier).addItem(item);
-          print("Item added to order");
         },
         child: Card(
           surfaceTintColor: Colors.white,

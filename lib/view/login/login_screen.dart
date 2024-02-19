@@ -1,8 +1,11 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:restaurent_pos/common/drawer.dart';
+import 'package:restaurent_pos/common/failure.dart';
 import 'package:restaurent_pos/controllers/auth_controller.dart';
+import 'package:restaurent_pos/main.dart';
 import 'package:restaurent_pos/models/user.dart';
 import 'package:restaurent_pos/theme/palette.dart';
 import 'package:restaurent_pos/view/core/appbar.dart';
@@ -20,7 +23,9 @@ class LoginScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.read(authControllerProvider.notifier);
+    final usersList = ref.watch(userListProvider(context));
     return Scaffold(
+        drawer: buildDrawer(ref, context),
         backgroundColor: Palette.backgroundColor,
         body: SafeArea(
           child: Row(
@@ -43,13 +48,32 @@ class LoginScreen extends ConsumerWidget {
                         SizedBox(
                           height: 20,
                         ),
-                        _buildUserTile(
-                            User(name: "Saida Charaf", role: Role.admin), ref),
-                        _buildUserTile(
-                            User(name: "Ahmed Claxsoni", role: Role.cashier),
-                            ref),
-                        _buildUserTile(
-                            User(name: "Soad bosni", role: Role.waiter), ref),
+
+                        // show all items in userlist
+
+                        Expanded(
+                          child: usersList.when(
+                              data: (users) {
+                                return ListView.builder(
+                                    itemCount: users.length,
+                                    itemBuilder: (context, index) {
+                                      return _buildUserTile(users[index], ref);
+                                    });
+                              },
+                              loading: () => Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                              error: (error, stack) {
+                                if (error is Failure) {
+                                  return Center(
+                                    child: Text(error.message),
+                                  );
+                                }
+                                return Center(
+                                  child: Text('Something went wrong'),
+                                );
+                              }),
+                        ),
                       ],
                     ),
                   )),
@@ -97,6 +121,21 @@ class LoginScreen extends ConsumerWidget {
 class PinKeyPad extends ConsumerStatefulWidget {
   PinKeyPad({super.key});
 
+  void login(
+      BuildContext context, WidgetRef ref, TextEditingController controller) {
+    final user = ref.watch(_currentSelectedUser);
+    if (user != null && controller.text.length == 4) {
+      ref
+          .read(authControllerProvider.notifier)
+          .login(context, user.name, int.parse(controller.text));
+      controller.clear();
+    }
+  }
+
+  void updateText(String text, TextEditingController controller) {
+    controller.text += text;
+  }
+
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _PinKeyPadState();
 }
@@ -113,7 +152,6 @@ class _PinKeyPadState extends ConsumerState<PinKeyPad> {
 
   @override
   Widget build(BuildContext context) {
-    print("widget rebuilt");
     return Container(
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -150,8 +188,7 @@ class _PinKeyPadState extends ConsumerState<PinKeyPad> {
             SizedBox(
               height: 20,
             ),
-            // hidden pin dots
-
+            // hidden pin dot
             Expanded(
               child: LayoutBuilder(
                   builder: (context, constraints) => ConstrainedBox(
@@ -184,6 +221,7 @@ class _PinKeyPadState extends ConsumerState<PinKeyPad> {
                                   return _buildKeyNumber("0", ref, () {
                                     setState(() {
                                       controller.text = "${controller.text}0";
+                                      widget.login(context, ref, controller);
                                     });
                                   });
                                 case 9:
@@ -193,6 +231,7 @@ class _PinKeyPadState extends ConsumerState<PinKeyPad> {
                                       .contains("login")) {
                                     _buildKeyNumber(".", ref, () {
                                       controller.text = "${controller.text}.";
+                                      widget.login(context, ref, controller);
                                     });
                                   } else {
                                     return Container(
@@ -205,7 +244,7 @@ class _PinKeyPadState extends ConsumerState<PinKeyPad> {
                                     setState(() {
                                       controller.text = controller.text +
                                           (index + 1).toString();
-                                      if (controller.text.length == 4) {}
+                                      widget.login(context, ref, controller);
                                     });
                                   });
                               }

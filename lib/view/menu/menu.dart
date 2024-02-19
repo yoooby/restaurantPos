@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:restaurent_pos/common/drawer.dart';
 
 import 'package:restaurent_pos/controllers/core_controller.dart';
 import 'package:restaurent_pos/models/item.dart';
@@ -25,9 +26,7 @@ class Menu extends ConsumerWidget {
     final data = ref.watch(itemsListProvider);
     return SafeArea(
       child: Scaffold(
-          drawer: Drawer(
-            backgroundColor: Palette.drawerColor,
-          ),
+          drawer: buildDrawer(ref, context),
           backgroundColor: Palette.backgroundColor,
           body: Row(
             children: [
@@ -49,14 +48,20 @@ class Menu extends ConsumerWidget {
                                 }
                                 // Items list
                                 return GridView.builder(
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 4),
-                                  itemBuilder: (context, index) {
-                                    return ItemCard(items[index]);
-                                  },
-                                  itemCount: items.length,
-                                );
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 4),
+                                    itemBuilder: (context, index) {
+                                      if (index == 0) {
+                                        return CategoryCard(onTap: () {
+                                          Routemaster.of(context).pop();
+                                        });
+                                      }
+                                      return ItemCard(items[index - 1]);
+                                    },
+                                    itemCount:
+                                        items.length + 1 // for the back button,
+                                    );
                               },
                               error: (_, __) => Placeholder(),
                               loading: () {
