@@ -92,8 +92,6 @@ class CoreRepository {
       final snapshot = await _firestore.collection('orders').doc(orderId).get();
       // i keep gettiing expected value of type list<int> but got value of type list<dynamic>
 
-      
-
       final order = Model.Order.fromMap(snapshot.data()!);
       return right(order);
     } catch (e) {
@@ -139,5 +137,10 @@ class CoreRepository {
     } catch (e) {
       return left(Failure(e.toString()));
     }
+  }
+
+  Stream<List<Model.Order>> getOrders() {
+    return _firestore.collection('orders').snapshots().map((event) =>
+        event.docs.map((e) => Model.Order.fromMap(e.data())).toList());
   }
 }

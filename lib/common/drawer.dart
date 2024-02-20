@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:restaurent_pos/main.dart';
 import 'package:restaurent_pos/theme/palette.dart';
 import 'package:routemaster/routemaster.dart';
 
 Widget buildDrawer(WidgetRef ref, BuildContext context) {
-  print('buildDrawer');
   return Drawer(
     backgroundColor: Palette.drawerColor,
     child: Column(
@@ -19,6 +17,9 @@ Widget buildDrawer(WidgetRef ref, BuildContext context) {
         _buildDrawerListTile('Payment', () {
           Routemaster.of(context).replace('/payment');
         }, Icons.payment_outlined),
+        _buildDrawerListTile('Orders', () {
+          Routemaster.of(context).replace('/orders');
+        }, Icons.shopping_cart_outlined),
       ],
     ),
   );

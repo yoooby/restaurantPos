@@ -2,19 +2,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:restaurent_pos/common/failure.dart';
-import 'package:restaurent_pos/common/type_defs.dart';
 import 'package:restaurent_pos/common/utils.dart';
 import 'package:restaurent_pos/main.dart';
 import 'package:restaurent_pos/models/user.dart';
 import 'package:restaurent_pos/repository/auth_repository.dart';
-import 'package:restaurent_pos/repository/core_repository.dart';
 
-final authControllerProvider =
-    StateNotifierProvider<AuthController, bool>((ref) {
-  final authRepository = ref.watch(AuthRepositoryProvider);
-  return AuthController(ref, authRepository);
-});
+final authControllerProvider = StateNotifierProvider<AuthController, bool>(
+  (ref) {
+    final authRepository = ref.watch(AuthRepositoryProvider);
+    return AuthController(ref, authRepository);
+  },
+);
 
 // getusers method provider
 final userListProvider = FutureProvider.autoDispose

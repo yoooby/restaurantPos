@@ -225,7 +225,7 @@ class _PinKeyPadState extends ConsumerState<PinKeyPad> {
                                     });
                                   });
                                 case 9:
-                                  if (Routemaster.of(context)
+                                  if (!Routemaster.of(context)
                                       .currentRoute
                                       .path
                                       .contains("login")) {

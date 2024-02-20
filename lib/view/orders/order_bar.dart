@@ -1,13 +1,10 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent_pos/common/utils.dart';
 import 'package:restaurent_pos/controllers/core_controller.dart';
 import 'package:restaurent_pos/controllers/orders.dart';
-import 'package:restaurent_pos/models/item.dart';
 import 'package:restaurent_pos/models/order.dart';
 import 'package:restaurent_pos/theme/palette.dart';
 

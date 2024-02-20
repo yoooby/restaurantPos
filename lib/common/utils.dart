@@ -17,3 +17,22 @@ void showSuccessSnackBar(BuildContext context, String message) {
     ),
   );
 }
+
+List<String> months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+];
+// 11 Novemeber 2021
+String getFormattedDate(DateTime date) {
+  return '${date.day} ${(months[date.month - 1])} ${date.year}';
+}

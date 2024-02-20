@@ -57,8 +57,9 @@ class ItemCard extends ConsumerWidget {
 
 class CategoryCard extends StatelessWidget {
   final String? category;
+  final int? count;
   final VoidCallback onTap;
-  const CategoryCard({super.key, this.category, required this.onTap});
+  const CategoryCard({super.key, this.category, required this.onTap, this.count});
 
   @override
   Widget build(BuildContext context) {

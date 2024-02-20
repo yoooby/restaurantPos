@@ -15,6 +15,11 @@ import 'package:restaurent_pos/repository/core_repository.dart';
 // import uuid
 import 'package:uuid/uuid.dart';
 
+final getOrdersProvider = StreamProvider.autoDispose<List<Model.Order>>((ref) {
+  final controller = ref.read(coreControllerProvider.notifier);
+  return controller.getOrdersStream();
+});
+
 final getOrderByIDProvider =
     FutureProvider.family<Model.Order?, String>((ref, id) async {
   final controller = ref.read(coreControllerProvider.notifier);
@@ -74,6 +79,11 @@ class CoreController extends StateNotifier<bool> {
     return items.fold((l) => [], (r) {
       return r;
     });
+  }
+
+  // get orders stream
+  Stream<List<Model.Order>> getOrdersStream() {
+    return _coreRepository.getOrders();
   }
 
   // get categories list
@@ -151,5 +161,11 @@ class CoreController extends StateNotifier<bool> {
         return;
       });
     });
+  }
+
+  // get all orders
+  Stream<List<Model.Order>> getOrders() async* {
+    final orders = _coreRepository.getOrders();
+    yield* orders;
   }
 }

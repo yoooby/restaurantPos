@@ -14,6 +14,8 @@ dependencies:
     sdk: flutter
   flutter_riverpod: ^2.4.10
   fpdart: ^1.1.0
+  google_fonts: ^6.1.0
+  grouped_list: ^5.1.2
   routemaster: ^1.0.1
   uuid: ^4.3.3
 

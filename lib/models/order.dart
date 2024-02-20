@@ -15,6 +15,10 @@ class Order {
   final String tableId;
   final User user;
 
+  // get order total
+  double get total => items.fold(
+      0, (previousValue, element) => previousValue + element.item.price);
+
   Order({
     required this.id,
     required this.note,

@@ -2,6 +2,7 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:restaurent_pos/controllers/auth_controller.dart';
 import 'package:restaurent_pos/controllers/core_controller.dart';
 import 'package:restaurent_pos/firebase_options.dart';
 import 'package:restaurent_pos/models/item.dart';
@@ -13,13 +14,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent_pos/view/core/appbar.dart';
 import 'package:restaurent_pos/view/menu/menu.dart';
 import 'package:restaurent_pos/view/orders/order_bar.dart';
+import 'package:restaurent_pos/view/orders/orders_screen.dart';
 import 'package:restaurent_pos/view/tables/tables_screen.dart';
 import 'package:routemaster/routemaster.dart';
 
 final userProvider = StateProvider<User?>((ref) => null);
 
-final _isAuthenticateProvider =
-    Provider<bool>((ref) => ref.watch(userProvider) == null ? false : true);
+final _isAuthenticateProvider = Provider<bool>((ref) {
+  ref.watch(userProvider);
+  return ref.watch(userProvider) == null ? false : true;
+});
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,57 +35,32 @@ void main() async {
   ));
 }
 
-class MainApp extends ConsumerStatefulWidget {
+class MainApp extends ConsumerWidget {
   const MainApp({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _MainAppState();
-}
-
-class _MainAppState extends ConsumerState<MainApp> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp.router(
+  Widget build(BuildContext context, WidgetRef ref) {
+    print('is auth: ${ref.watch(_isAuthenticateProvider)}');
+    return MaterialApp(
+      theme: Palette().lightTheme,
+      debugShowCheckedModeBanner: false,
       title: 'Restaurant POS',
-      routeInformationParser: RoutemasterParser(),
-      routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
-        if (ref.watch(_isAuthenticateProvider)) {
-          return cashierRoutes;
-        } else {
-          return loggedOutRoute;
-        }
-      }),
+      home: Scaffold(
+        body: OrdersScreen(),
+      ),
     );
+    // return MaterialApp.router(
+    //   theme: Palette().lightTheme,
+    //   debugShowCheckedModeBanner: false,
+    //   title: 'Restaurant POS',
+    //   routeInformationParser: RoutemasterParser(),
+    //   routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
+    //     if (ref.read(_isAuthenticateProvider)) {
+    //       return cashierRoutes;
+    //     } else {
+    //       return loggedOutRoute;
+    //     }
+    //   }),
+    // );
   }
 }
-
-
-
-// SafeArea(
-//         child: Scaffold(
-//             drawer: Drawer(
-//               backgroundColor: Palette.drawerColor,
-//             ),
-//             // check out, tables, orders, tools with Pallete.txtcolor
-//             backgroundColor: Palette.backgroundColor,
-//             body: Row(
-//               children: [
-//                 Expanded(
-//                     flex: 3,
-//                     child: Column(
-//                       children: [
-//                         TopBar(),
-//                         const TablesScreen(),
-//                       ],
-//                     )),
-//                 Expanded(child: const OrderBar()),
-//               ],
-//             )),
-//       ),
-//     );
-//   }
