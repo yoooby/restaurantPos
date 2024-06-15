@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:restaurent_pos/common/failure.dart';
 import 'package:restaurent_pos/common/type_defs.dart';
-import 'package:restaurent_pos/models/user.dart';
-import 'package:restaurent_pos/repository/firebase.dart';
+import 'package:restaurent_pos/shared/models/user.dart';
+import 'package:restaurent_pos/shared/providers/firebase.dart';
 
 final AuthRepositoryProvider = Provider<AuthRepository>((ref) {
   final firestore = ref.watch(fireStoreProvider);

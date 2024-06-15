@@ -3,8 +3,8 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:restaurent_pos/models/item.dart';
-import 'package:restaurent_pos/models/user.dart';
+import 'package:restaurent_pos/shared/models/item.dart';
+import 'package:restaurent_pos/shared/models/user.dart';
 
 class Order {
   final String id;

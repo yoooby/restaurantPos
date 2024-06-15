@@ -3,12 +3,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent_pos/common/drawer.dart';
-import 'package:restaurent_pos/controllers/core_controller.dart';
-import 'package:restaurent_pos/controllers/orders.dart';
-import 'package:restaurent_pos/models/table.dart';
+import 'package:restaurent_pos/features/orders/controller/orders_controller.dart';
+import 'package:restaurent_pos/shared/providers/current_order_provider.dart';
+import 'package:restaurent_pos/shared/models/table.dart';
+import 'package:restaurent_pos/shared/providers/current_selected_table.dart';
+import 'package:restaurent_pos/features/tables/controller/tables_controller.dart';
 import 'package:restaurent_pos/theme/palette.dart';
-import 'package:restaurent_pos/view/core/appbar.dart';
-import 'package:restaurent_pos/view/orders/order_bar.dart';
+import 'package:restaurent_pos/shared/view/appbar.dart';
+import 'package:restaurent_pos/shared/view/order_bar.dart';
 import 'package:routemaster/routemaster.dart';
 
 class TablesScreen extends ConsumerWidget {
@@ -47,7 +49,7 @@ class TablesScreen extends ConsumerWidget {
                                 .clearOrder();
                           } else {
                             final order = await ref
-                                .read(coreControllerProvider.notifier)
+                                .read(ordersControllerProvider.notifier)
                                 .getOrderByID(data[index].orderId!);
                             ref
                                 .read(currentOrderProvider.notifier)
@@ -65,7 +67,7 @@ class TablesScreen extends ConsumerWidget {
                   );
                 }, error: (error, stack) {
                   return Center(
-                    child: Text(error.toString()),
+                    child: Text(error.toString() + stack.toString()),
                   );
                 }, loading: () {
                   return Center(

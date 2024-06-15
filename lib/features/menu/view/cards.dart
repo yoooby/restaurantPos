@@ -3,9 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent_pos/common/utils.dart';
-import 'package:restaurent_pos/controllers/core_controller.dart';
-import 'package:restaurent_pos/controllers/orders.dart';
-import 'package:restaurent_pos/models/item.dart';
+import 'package:restaurent_pos/shared/providers/current_order_provider.dart';
+import 'package:restaurent_pos/shared/models/item.dart';
+import 'package:restaurent_pos/shared/providers/current_selected_table.dart';
 import 'package:restaurent_pos/theme/palette.dart';
 
 class ItemCard extends ConsumerWidget {
@@ -59,7 +59,8 @@ class CategoryCard extends StatelessWidget {
   final String? category;
   final int? count;
   final VoidCallback onTap;
-  const CategoryCard({super.key, this.category, required this.onTap, this.count});
+  const CategoryCard(
+      {super.key, this.category, required this.onTap, this.count});
 
   @override
   Widget build(BuildContext context) {

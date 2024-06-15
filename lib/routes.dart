@@ -1,10 +1,10 @@
 // routemaster
 import 'package:flutter/material.dart';
-import 'package:restaurent_pos/view/login/login_screen.dart';
-import 'package:restaurent_pos/view/menu/menu.dart';
-import 'package:restaurent_pos/view/orders/orders_screen.dart';
-import 'package:restaurent_pos/view/orders/payment_screen.dart';
-import 'package:restaurent_pos/view/tables/tables_screen.dart';
+import 'package:restaurent_pos/features/auth/view/login_screen.dart';
+import 'package:restaurent_pos/features/menu/view/menu_screen.dart';
+import 'package:restaurent_pos/features/orders/view/orders_screen.dart';
+import 'package:restaurent_pos/features/payment/view/payment_screen.dart';
+import 'package:restaurent_pos/features/tables/view/tables_screen.dart';
 import 'package:routemaster/routemaster.dart';
 
 // cashier routes, admin routes both have login

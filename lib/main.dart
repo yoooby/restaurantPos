@@ -2,20 +2,11 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:restaurent_pos/controllers/auth_controller.dart';
-import 'package:restaurent_pos/controllers/core_controller.dart';
 import 'package:restaurent_pos/firebase_options.dart';
-import 'package:restaurent_pos/models/item.dart';
-import 'package:restaurent_pos/models/table.dart';
-import 'package:restaurent_pos/models/user.dart';
+import 'package:restaurent_pos/shared/models/user.dart';
 import 'package:restaurent_pos/routes.dart';
 import 'package:restaurent_pos/theme/palette.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:restaurent_pos/view/core/appbar.dart';
-import 'package:restaurent_pos/view/menu/menu.dart';
-import 'package:restaurent_pos/view/orders/order_bar.dart';
-import 'package:restaurent_pos/view/orders/orders_screen.dart';
-import 'package:restaurent_pos/view/tables/tables_screen.dart';
 import 'package:routemaster/routemaster.dart';
 
 final userProvider = StateProvider<User?>((ref) => null);
@@ -41,26 +32,26 @@ class MainApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     print('is auth: ${ref.watch(_isAuthenticateProvider)}');
-    return MaterialApp(
-      theme: Palette().lightTheme,
-      debugShowCheckedModeBanner: false,
-      title: 'Restaurant POS',
-      home: Scaffold(
-        body: OrdersScreen(),
-      ),
-    );
-    // return MaterialApp.router(
+    // return MaterialApp(
     //   theme: Palette().lightTheme,
     //   debugShowCheckedModeBanner: false,
     //   title: 'Restaurant POS',
-    //   routeInformationParser: RoutemasterParser(),
-    //   routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
-    //     if (ref.read(_isAuthenticateProvider)) {
-    //       return cashierRoutes;
-    //     } else {
-    //       return loggedOutRoute;
-    //     }
-    //   }),
+    //   home: Scaffold(
+    //     body: OrdersScreen(),
+    //   ),
     // );
+    return MaterialApp.router(
+      theme: Palette().lightTheme,
+      debugShowCheckedModeBanner: false,
+      title: 'Restaurant POS',
+      routeInformationParser: RoutemasterParser(),
+      routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
+        if (ref.read(_isAuthenticateProvider)) {
+          return cashierRoutes;
+        } else {
+          return loggedOutRoute;
+        }
+      }),
+    );
   }
 }

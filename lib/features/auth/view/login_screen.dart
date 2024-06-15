@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent_pos/common/drawer.dart';
 import 'package:restaurent_pos/common/failure.dart';
-import 'package:restaurent_pos/controllers/auth_controller.dart';
+import 'package:restaurent_pos/features/auth/controller/auth_controller.dart';
 import 'package:restaurent_pos/main.dart';
-import 'package:restaurent_pos/models/user.dart';
+import 'package:restaurent_pos/shared/models/user.dart';
 import 'package:restaurent_pos/theme/palette.dart';
-import 'package:restaurent_pos/view/core/appbar.dart';
+import 'package:restaurent_pos/shared/view/appbar.dart';
 import 'package:routemaster/routemaster.dart';
 
 final _currentSelectedUser = StateProvider<User?>((ref) => null);

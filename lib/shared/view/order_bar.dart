@@ -3,9 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent_pos/common/utils.dart';
-import 'package:restaurent_pos/controllers/core_controller.dart';
-import 'package:restaurent_pos/controllers/orders.dart';
-import 'package:restaurent_pos/models/order.dart';
+import 'package:restaurent_pos/features/orders/controller/orders_controller.dart';
+import 'package:restaurent_pos/shared/providers/current_order_provider.dart';
+import 'package:restaurent_pos/shared/models/order.dart';
+import 'package:restaurent_pos/shared/providers/current_selected_table.dart';
 import 'package:restaurent_pos/theme/palette.dart';
 
 // statenotifier currentOrderprovider with a list and add item to list method
@@ -170,7 +171,7 @@ class OrderBar extends ConsumerWidget {
                             return;
                           }
                           ref
-                              .read(coreControllerProvider.notifier)
+                              .read(ordersControllerProvider.notifier)
                               .createOrder(context, currentselectedTable);
                           showSuccessSnackBar(context, "Order Sent!");
                           // clear the order after sending

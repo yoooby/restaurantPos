@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:restaurent_pos/controllers/core_controller.dart';
-import 'package:restaurent_pos/models/item.dart';
-import 'package:restaurent_pos/models/order.dart';
+import 'package:restaurent_pos/shared/models/item.dart';
+import 'package:restaurent_pos/shared/models/order.dart';
 
 final currentOrderProvider =
     StateNotifierProvider<CurrentOrder, List<OrderItem>>((ref) {

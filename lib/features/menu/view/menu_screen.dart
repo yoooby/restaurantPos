@@ -4,16 +4,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent_pos/common/drawer.dart';
-
-import 'package:restaurent_pos/controllers/core_controller.dart';
-import 'package:restaurent_pos/models/item.dart';
+import 'package:restaurent_pos/shared/models/item.dart';
 import 'package:restaurent_pos/theme/palette.dart';
-import 'package:restaurent_pos/view/core/appbar.dart';
-import 'package:restaurent_pos/view/menu/bottom_category_bar.dart';
-import 'package:restaurent_pos/view/menu/cards.dart';
-import 'package:restaurent_pos/view/orders/order_bar.dart';
-import 'package:restaurent_pos/view/tables/tables_screen.dart';
+import 'package:restaurent_pos/shared/view/appbar.dart';
+import 'package:restaurent_pos/features/menu/view/bottom_category_bar.dart';
+import 'package:restaurent_pos/features/menu/view/cards.dart';
+import 'package:restaurent_pos/shared/view/order_bar.dart';
+import 'package:restaurent_pos/features/tables/view/tables_screen.dart';
 import 'package:routemaster/routemaster.dart';
+
+import '../controller/menu_controller.dart';
 
 class Menu extends ConsumerWidget {
   String? category;

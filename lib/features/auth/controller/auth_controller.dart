@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:restaurent_pos/common/utils.dart';
 import 'package:restaurent_pos/main.dart';
-import 'package:restaurent_pos/models/user.dart';
-import 'package:restaurent_pos/repository/auth_repository.dart';
+import 'package:restaurent_pos/shared/models/user.dart';
+import 'package:restaurent_pos/features/auth/repository/auth_repository.dart';
 
 final authControllerProvider = StateNotifierProvider<AuthController, bool>(
   (ref) {
